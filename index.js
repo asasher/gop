@@ -6,7 +6,7 @@ var fbg = require('fbgraph');
 
 var conf = {
 	client_id: process.env.FB_CLIENT_ID,
-	redirect_uri: 'http://gop-dev.elasticbeanstalk.com/',
+	redirect_uri: 'http://gopapp.heroku.com/',
 	port: process.env.PORT || 8888,
 	permissions: ['public_profile', 'email', 'user_friends']
 }
