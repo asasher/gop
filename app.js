@@ -7,7 +7,7 @@ var MongoClient = require('mongodb').MongoClient;
 var CONF = {
 	CLIENT_ID: process.env.FB_CLIENT_ID,
 	CLIENT_SECRET: process.env.FB_CLIENT_SECRET,
-	REDIRECT_URI: 'http://gopapp.herokuapp.com/',
+	REDIRECT_URI: 'http://gopapp.herokuapp.com',
 	PORT: process.env.PORT || 8888,
 	PERMISSIONS: ['public_profile', 'email', 'user_friends'],
 	VIEW_PATH: 'app.html',
@@ -21,7 +21,9 @@ console.log('Server is listening on port ' + CONF.PORT);
 function handleRequest(req,res) {
 	console.log('got request');
 	
-	var query = url.parse(req.url).query;
+	var query = url.parse(req.url, true).query;
+	
+	console.log(query, query.code);
 	 
 	if (!query || !query.code) {
 		var authUrl = fbg.getOauthUrl({
