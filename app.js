@@ -4,14 +4,7 @@ var url = require('url');
 var swig = require('swig');
 var fbg = require('fbgraph');
 var MongoClient = require('mongodb').MongoClient;
-
-var logs = [];
-function log(msg) {	
-	if(arguments) {
-		console.log.apply(this, arguments);
-		logs.push(arguments.join(' '));		
-	} 
-}
+var express = require('express');
 
 var CONF = {
 	CLIENT_ID: process.env.FB_CLIENT_ID,
@@ -23,69 +16,75 @@ var CONF = {
 	MONGODB_URL: process.env.MONGODB_URL
 }
 
-var server = http.createServer(handleRequest);
-server.listen(CONF.PORT);
-log('Server is listening on port ' + CONF.PORT);
-	
-function handleRequest(req,res) {
-	log('got request');
-	
-	var query = url.parse(req.url, true).query;
+var app = express();
+
+app.engine('html', swig.renderFile);
+
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
+app.set('view cache', false);
+swig.setDefaults({ cache: false });
+app.listen(CONF.PORT);
+console.log('Server is listening on port ' + CONF.PORT);
+
+app.get('/', function (req, res) {
+	res.render('hello', { text: 'HELLO', textClass: 'good'});
+});
+
+app.get('/graph', function(req, res) {
+	res.render('hello', {text: 'GRAPH', textClass: 'good'});	
+});
+
+app.get('/join', function(req, res) {
+	console.log('got request');
 	 
-	if (!query || !query.code) {
+	if (!res.query || !res.query.code) {
 		var authUrl = fbg.getOauthUrl({
 			client_id: CONF.CLIENT_ID,
 			redirect_uri: CONF.REDIRECT_URI,
 			scope: CONF.PERMISSIONS.join(',')
 		});
 		
-		log('redirecting to facebook to get permissions', authUrl);
-		res.writeHead(302, {
-			Location: authUrl
-		});
-		res.end();
+		console.log('redirecting to facebook to get permissions', authUrl);
+		res.redirect(authUrl);
 		return;
 	}
 	
-	log('got code', query.code);
+	console.log('got code', res.query.code);
 	
 	fbg.authorize({
 		client_id: CONF.CLIENT_ID,
 		redirect_uri: CONF.REDIRECT_URI,
 		client_secret: CONF.CLIENT_SECRET,
-		code: query.code
+		code: res.query.code
 	}, function(err, fbRes) {
-		log('response from facebook', fbRes);
+		console.log('response from facebook', fbRes);
 		
 		if(err) {
-			log(err);
-			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs.join('\n')});
+			console.log(err);
+			res.render('hello', {text: '_ No Luck _', textClass : 'bad'});
 		}
 		else if (fbRes || fbRes.error) {
-			log(fbRes.error)
-			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs.join('\n')});			
-		} else {
-			log('connecting to mongo', CONF.MONGODB_URL);
-			if(CONF.MONGODB_URL) {
-				MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-					if (err) return log(err);
+			console.log(fbRes.error)
+			res.render('hello',{text: '_ No Luck _', textClass : 'bad'});			
+		} else {			
+			// console.log('connecting to mongo', CONF.MONGODB_URL);
+			// if(CONF.MONGODB_URL) {
+			// 	MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+			// 		if (err) return console.log(err);
 					
-					log('connected to mongodb');
-					db.close();
+			// 		console.log('connected to mongodb');
+			// 		db.close();
 					
-					renderView(res, {text: '!!! All Done !!!', textClass: 'good', logs: logs.join('\n')});
-				});				
-			}							
+			// 		res.render('hello', {text: '!!! All Done !!!', textClass: 'good'});
+			// 	});				
+			// }
+			
+			// res.redirect('/graph');
+			
+			fbg.get('me', function(err, fbRes) {
+				res.render('hello', {text: 'ME', textClass: 'good', data: JSON.stringify(fbRes, null, 4)});
+			});		
 		}			
-	});
-}
-
-function renderView(res, data) {
-	res.writeHead(200, {
-		'Content-Type': 'text/html'
-	});
-	res.write(swig.render(fs.readFileSync(CONF.VIEW_PATH, 'utf-8'), { locals: data }));
-	res.end(function() {
-		log('done processing request');
 	});	
-}
+});
