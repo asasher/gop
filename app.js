@@ -32,9 +32,9 @@ function handleRequest(req,res) {
 			scope: CONF.PERMISSIONS.join(',')
 		});
 		
-		console.log('redirecting to facebook to get permissions');
+		console.log('redirecting to facebook to get permissions', authUrl);
 		res.writeHead(302, {
-			"Location": authUrl
+			Location: authUrl
 		});
 		res.end();
 		return;
@@ -50,14 +50,14 @@ function handleRequest(req,res) {
 	}, function(err, fbRes) {
 		console.log('response from facebook', fbRes);
 		
-		MongoClient.connect(url, function(err, db) {
+		MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
 			if (err) return console.log(err);
 			
-			console.log("connected to mongodb");
+			console.log('connected to mongodb');
 			db.close();
 			
 			res.writeHead(200, {
-				"Content-Type": "text/html"
+				'Content-Type': 'text/html'
 			});
 			res.write(fs.readFileSync(CONF.VIEW_PATH, 'utf-8'));
 			res.end(function() {
