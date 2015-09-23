@@ -63,15 +63,17 @@ function handleRequest(req,res) {
 			log(fbRes.error)
 			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs.join('\n')});			
 		} else {
-			log('connecting to mongo', CONF.MONGODB_URL);			
-			MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-				if (err) return log(err);
-				
-				log('connected to mongodb');
-				db.close();
-				
-				renderView(res, {text: '!!! All Done !!!', textClass: 'good', logs: logs.join('\n')});
-			});			
+			log('connecting to mongo', CONF.MONGODB_URL);
+			if(CONF.MONGODB_URL) {
+				MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+					if (err) return log(err);
+					
+					log('connected to mongodb');
+					db.close();
+					
+					renderView(res, {text: '!!! All Done !!!', textClass: 'good', logs: logs.join('\n')});
+				});				
+			}							
 		}			
 	});
 }
