@@ -1,6 +1,7 @@
 var fs = require('fs');
 var http = require('http');
 var url = require('url');
+var swig = require('swig');
 var fbg = require('fbgraph');
 var MongoClient = require('mongodb').MongoClient;
 
@@ -50,19 +51,26 @@ function handleRequest(req,res) {
 	}, function(err, fbRes) {
 		console.log('response from facebook', fbRes);
 		
+		if (fbRes || fbRes.error) {
+			renderView(res, {text: '_ No Luck _', textClass : 'bad'});			
+		}		
 		MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
 			if (err) return console.log(err);
 			
 			console.log('connected to mongodb');
 			db.close();
 			
-			res.writeHead(200, {
-				'Content-Type': 'text/html'
-			});
-			res.write(fs.readFileSync(CONF.VIEW_PATH, 'utf-8'));
-			res.end(function() {
-				console.log('done processing request');
-			});
+			renderView(res, {text: '!!! All Done !!!', textClass: 'good'});
 		});	
 	});
+}
+
+function renderView(res, data) {
+	res.writeHead(200, {
+		'Content-Type': 'text/html'
+	});
+	res.write(swig.render(fs.readFileSync(CONF.VIEW_PATH, 'utf-8'), { locals: data }));
+	res.end(function() {
+		console.log('done processing request');
+	});	
 }

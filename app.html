@@ -13,14 +13,19 @@
 			}			
 			.hero h1 {
 				text-align: center;
-				font-family: monospace;
+				font-family: monospace;				
+			}
+			.hero h1.good {
 				color: rgb(168, 216, 140);
+			}
+			.hero h1.bad {
+				color: rgb(168, 50, 50);
 			}
 		</style>
 	</head>
 	<body>
 		<div class="hero">
-			<h1>!!! ALL DONE !!!</h1>			
+			<h1 class="{{ classText }}">{{ text }}</h1>			
 		</div>		
 	</body>
 </html>

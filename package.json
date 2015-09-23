@@ -9,6 +9,7 @@
   "author": "asasher",
   "dependencies": {
     "fbgraph": "^1.0.0",
-    "mongodb": "^2.0.43"
+    "mongodb": "^2.0.43",
+    "swig": "^1.4.2"
   }
 }
