@@ -6,9 +6,11 @@ var fbg = require('fbgraph');
 var MongoClient = require('mongodb').MongoClient;
 
 var logs = [];
-function log(msg) {
-	console.log(msg);
-	logs.push(arguments.join(' '));	
+function log(msg) {	
+	if(arguments) {
+		console.log.apply(this, arguments);
+		logs.push(arguments.join(' '));		
+	} 
 }
 
 var CONF = {
