@@ -8,7 +8,7 @@ var MongoClient = require('mongodb').MongoClient;
 var logs = [];
 function log(msg) {
 	console.log(msg);
-	logs.push(msg);	
+	logs.push(msg + '\n');	
 }
 
 var CONF = {
