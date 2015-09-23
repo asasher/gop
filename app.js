@@ -9,7 +9,7 @@ var express = require('express');
 var CONF = {
 	CLIENT_ID: process.env.FB_CLIENT_ID,
 	CLIENT_SECRET: process.env.FB_CLIENT_SECRET,
-	REDIRECT_URI: 'http://gopapp.herokuapp.com',
+	REDIRECT_URI: 'http://gopapp.herokuapp.com/join',
 	PORT: process.env.PORT || 8888,
 	PERMISSIONS: ['public_profile', 'email', 'user_friends'],
 	VIEW_PATH: 'app.html',
