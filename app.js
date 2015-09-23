@@ -55,7 +55,12 @@ function handleRequest(req,res) {
 	}, function(err, fbRes) {
 		log('response from facebook', fbRes);
 		
-		if (fbRes || fbRes.error) {
+		if(err) {
+			log(err);
+			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs.join('\n')});
+		}
+		else if (fbRes || fbRes.error) {
+			log(fbRes.error)
 			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs.join('\n')});			
 		} else {
 			log('connecting to mongo', CONF.MONGODB_URL);			
