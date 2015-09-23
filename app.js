@@ -52,6 +52,7 @@ function handleRequest(req,res) {
 		if (fbRes || fbRes.error) {
 			renderView(res, {text: '_ No Luck _', textClass : 'bad'});			
 		} else {
+			console.log('connecting to mongo', CONF.MONGODB_URL);			
 			MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
 				if (err) return console.log(err);
 				
