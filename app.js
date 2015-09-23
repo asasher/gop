@@ -23,8 +23,6 @@ function handleRequest(req,res) {
 	console.log('got request');
 	
 	var query = url.parse(req.url, true).query;
-	
-	console.log(query, query.code);
 	 
 	if (!query || !query.code) {
 		var authUrl = fbg.getOauthUrl({
@@ -53,15 +51,16 @@ function handleRequest(req,res) {
 		
 		if (fbRes || fbRes.error) {
 			renderView(res, {text: '_ No Luck _', textClass : 'bad'});			
-		}		
-		MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-			if (err) return console.log(err);
-			
-			console.log('connected to mongodb');
-			db.close();
-			
-			renderView(res, {text: '!!! All Done !!!', textClass: 'good'});
-		});	
+		} else {
+			MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+				if (err) return console.log(err);
+				
+				console.log('connected to mongodb');
+				db.close();
+				
+				renderView(res, {text: '!!! All Done !!!', textClass: 'good'});
+			});			
+		}			
 	});
 }
 
