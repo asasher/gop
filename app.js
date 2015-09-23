@@ -8,7 +8,7 @@ var MongoClient = require('mongodb').MongoClient;
 var logs = [];
 function log(msg) {
 	console.log(msg);
-	logs.push(msg + '\n');	
+	logs.push(arguments.join(' '));	
 }
 
 var CONF = {
@@ -56,7 +56,7 @@ function handleRequest(req,res) {
 		log('response from facebook', fbRes);
 		
 		if (fbRes || fbRes.error) {
-			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs});			
+			renderView(res, {text: '_ No Luck _', textClass : 'bad', logs: logs.join('\n')});			
 		} else {
 			log('connecting to mongo', CONF.MONGODB_URL);			
 			MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
@@ -65,7 +65,7 @@ function handleRequest(req,res) {
 				log('connected to mongodb');
 				db.close();
 				
-				renderView(res, {text: '!!! All Done !!!', textClass: 'good', logs: logs});
+				renderView(res, {text: '!!! All Done !!!', textClass: 'good', logs: logs.join('\n')});
 			});			
 		}			
 	});
