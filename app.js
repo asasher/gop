@@ -81,7 +81,11 @@ app.get('/join', function(req, res) {
 										
 					console.log('connecting to mongo', CONF.MONGODB_URL);
 					MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-						if (err) return console.log(err);
+						if (err) {
+							console.log(err);
+							res.render('hello', {text: '!!! DB ERROR !!!', textClass: 'bad', data: JSON.stringify(err, null, 4)});
+							return;
+						}
 						
 						console.log('connected to mongodb');
 						db.close();
