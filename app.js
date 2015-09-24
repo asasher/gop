@@ -61,11 +61,11 @@ app.get('/join', function(req, res) {
 		
 		if(err) {
 			console.log(err);
-			res.render('hello', {text: '_ No Luck _', textClass : 'bad'});
+			res.render('hello', {text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(err, null, 4)});
 		}
 		else if (fbRes || fbRes.error) {
 			console.log(fbRes.error)
-			res.render('hello',{text: '_ No Luck _', textClass : 'bad'});			
+			res.render('hello',{text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(fbRes, null, 4)});			
 		} else {			
 			// console.log('connecting to mongo', CONF.MONGODB_URL);
 			// if(CONF.MONGODB_URL) {
