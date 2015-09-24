@@ -10,6 +10,7 @@
   "dependencies": {
     "express": "^4.13.3",
     "fbgraph": "^1.0.0",
+    "lodash": "^3.10.1",
     "mongodb": "^2.0.43",
     "swig": "^1.4.2"
   }

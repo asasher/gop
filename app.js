@@ -5,6 +5,7 @@ var swig = require('swig');
 var fbg = require('fbgraph');
 var MongoClient = require('mongodb').MongoClient;
 var express = require('express');
+var _ = require('lodash');
 
 var CONF = {
 	CLIENT_ID: process.env.FB_CLIENT_ID,
@@ -90,9 +91,13 @@ app.get('/join', function(req, res) {
 						method: "GET",
 						relative_url: "me/friends"
 					}
-				], function(err, fbRes) {
-				res.render('hello', {text: 'ME', textClass: 'good', data: JSON.stringify(fbRes, null, 4)});
-			});		
+				], 
+				function(err, fbRes) {
+					var parsed = fbRes.map(function(elem) {
+						return JSON.parse(elem.body);
+					});					
+					res.render('hello', {text: 'ME', textClass: 'good', data: JSON.stringify(parsed, null, 4)});
+				});		
 		}			
 	});	
 });
