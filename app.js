@@ -63,7 +63,7 @@ app.get('/join', function(req, res) {
 			console.log(err);
 			res.render('hello', {text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(err, null, 4)});
 		}
-		else if (fbRes || fbRes.error) {
+		else if (!fbRes || fbRes.error) {
 			console.log(fbRes.error)
 			res.render('hello',{text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(fbRes, null, 4)});			
 		} else {			
