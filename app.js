@@ -37,8 +37,7 @@ app.get('/graph', function(req, res) {
 
 app.get('/join', function(req, res) {
 	console.log('got request');
-	 
-	if (!res.query || !res.query.code) {
+	if (!req.query || !req.query.code) {
 		var authUrl = fbg.getOauthUrl({
 			client_id: CONF.CLIENT_ID,
 			redirect_uri: CONF.REDIRECT_URI,
@@ -50,13 +49,13 @@ app.get('/join', function(req, res) {
 		return;
 	}
 	
-	console.log('got code', res.query.code);
+	console.log('got code', req.query.code);
 	
 	fbg.authorize({
 		client_id: CONF.CLIENT_ID,
 		redirect_uri: CONF.REDIRECT_URI,
 		client_secret: CONF.CLIENT_SECRET,
-		code: res.query.code
+		code: req.query.code
 	}, function(err, fbRes) {
 		console.log('response from facebook', fbRes);
 		
