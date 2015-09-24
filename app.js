@@ -32,10 +32,6 @@ app.get('/', function (req, res) {
 	res.render('hello', { text: 'HELLO', textClass: 'good'});
 });
 
-app.get('/graph', function(req, res) {
-	res.render('hello', {text: 'GRAPH', textClass: 'good'});	
-});
-
 app.get('/join', function(req, res) {
 	console.log('got request');
 	if (!req.query || !req.query.code) {
@@ -67,21 +63,7 @@ app.get('/join', function(req, res) {
 		else if (!fbRes || fbRes.error) {
 			console.log(fbRes.error)
 			res.render('hello',{text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(fbRes, null, 4)});			
-		} else {			
-			// console.log('connecting to mongo', CONF.MONGODB_URL);
-			// if(CONF.MONGODB_URL) {
-			// 	MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-			// 		if (err) return console.log(err);
-					
-			// 		console.log('connected to mongodb');
-			// 		db.close();
-					
-			// 		res.render('hello', {text: '!!! All Done !!!', textClass: 'good'});
-			// 	});				
-			// }
-			
-			// res.redirect('/graph');
-			
+		} else {
 			fbg.batch([
 					{
 						method: "GET",
@@ -95,8 +77,17 @@ app.get('/join', function(req, res) {
 				function(err, fbRes) {
 					var parsed = fbRes.map(function(elem) {
 						return JSON.parse(elem.body);
-					});					
-					res.render('hello', {text: 'ME', textClass: 'good', data: JSON.stringify(parsed, null, 4)});
+					});
+										
+					console.log('connecting to mongo', CONF.MONGODB_URL);
+					MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+						if (err) return console.log(err);
+						
+						console.log('connected to mongodb');
+						db.close();
+						
+						res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify(parsed, null, 4)});
+					});	
 				});		
 		}			
 	});	
