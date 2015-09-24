@@ -81,7 +81,16 @@ app.get('/join', function(req, res) {
 			
 			// res.redirect('/graph');
 			
-			fbg.get('me', function(err, fbRes) {
+			fbg.batch([
+					{
+						method: "GET",
+						relative_url: "me?fields=id,name,email,birthday"
+					},
+					{
+						method: "GET",
+						relative_url: "me/friends"
+					}
+				], function(err, fbRes) {
 				res.render('hello', {text: 'ME', textClass: 'good', data: JSON.stringify(fbRes, null, 4)});
 			});		
 		}			
