@@ -7,28 +7,26 @@
 			}
 			html, body {
 				position: relative;
+				background-color: #31313A;
 			}
-			.hero {
-				margin: auto;				
+			pre {
+				color: #fff;
 			}			
-			.hero h1 {
-				text-align: center;
-				font-family: monospace;				
+			pre.good {
+				color: #B0E681;
 			}
-			.hero h1.good {
-				color: rgb(168, 216, 140);
-			}
-			.hero h1.bad {
-				color: rgb(241, 116, 116);
+			pre.bad {
+				color: #EF7373;
 			}
 		</style>
 	</head>
 	<body>
-		<div class="hero">
-			<h1 class="{{ textClass }}">{{ text }}</h1>			
-		</div>
 		<pre>
 {{ data }}			
 		</pre>
+		<pre class="{{ textClass }}">
+{{ text }}
+		</pre>
+		
 	</body>
 </html>
