@@ -78,24 +78,47 @@ app.get('/join', function(req, res) {
 					var parsed = fbRes.map(function(elem) {
 						return JSON.parse(elem.body);
 					});
+					
+					var user = parsed[0];
+					var friendship = {
+						id : user.id,
+						friends: _.map(parsed[1].data, function(elem) {
+							return elem.id;
+						})
+					};
+					
+					res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship], null, 4)});
 										
-					console.log('connecting to mongo', CONF.MONGODB_URL);
-					MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-						if (err) {
-							console.log(err);
-							res.render('hello', {text: '!!! DB ERROR !!!', textClass: 'bad', data: JSON.stringify(err, null, 4)});
-							return;
-						}
+					// console.log('connecting to mongo', CONF.MONGODB_URL);
+					// MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+					// 	if (err) {
+					// 		console.log(err);
+					// 		res.render('hello', {text: '!!! DB ERROR !!!', textClass: 'bad', data: JSON.stringify(err, null, 4)});
+					// 		return;
+					// 	}
 						
-						console.log('connected to mongodb');
+					// 	console.log('connected to mongodb');
 						
-						// var users = db.collection('users');
-						// var friendships = db.collection('friendships');						
+					// 	var users = db.collection('users');
+					// 	var friendships = db.collection('friendships');
 						
-						db.close();
-						
-						res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify(parsed, null, 4)});
-					});	
+					// 	users.createIndex({ "id": 1 }, { unique: true })
+					// 		.then(function() {
+					// 			return friendships.createIndex({"id": 1}, {unique: true});							
+					// 		})
+					// 		.then(function() {
+					// 			return users.update(_.pluck(user, 'id'), _.omit(user, 'id'), {upsert: true}); 
+					// 		})
+					// 		.then(function() {
+					// 			return friendships.update(_.pluck(friendship, 'id'), _.omit(friendship, 'id'), {upsert: true});
+					// 		})
+					// 		.then(function() {
+					// 			db.close();
+					// 		})
+					// 		.then(function() {
+					// 			res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship], null, 4)});								
+					// 		});
+					// });					
 				});		
 		}			
 	});	
