@@ -86,39 +86,39 @@ app.get('/join', function(req, res) {
 							return elem.id;
 						})
 					};
-					
-					res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship], null, 4)});
 										
-					// console.log('connecting to mongo', CONF.MONGODB_URL);
-					// MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-					// 	if (err) {
-					// 		console.log(err);
-					// 		res.render('hello', {text: '!!! DB ERROR !!!', textClass: 'bad', data: JSON.stringify(err, null, 4)});
-					// 		return;
-					// 	}
+					console.log('connecting to mongo', CONF.MONGODB_URL);
+					MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+						if (err) {
+							console.log(err);
+							res.render('hello', {text: '!!! DB ERROR !!!', textClass: 'bad', data: JSON.stringify(err, null, 4)});
+							return;
+						}
 						
-					// 	console.log('connected to mongodb');
+						console.log('connected to mongodb');
 						
-					// 	var users = db.collection('users');
-					// 	var friendships = db.collection('friendships');
+						var users = db.collection('users');
+						var friendships = db.collection('friendships');
 						
-					// 	users.createIndex({ "id": 1 }, { unique: true })
-					// 		.then(function() {
-					// 			return friendships.createIndex({"id": 1}, {unique: true});							
-					// 		})
-					// 		.then(function() {
-					// 			return users.update(_.pluck(user, 'id'), _.omit(user, 'id'), {upsert: true}); 
-					// 		})
-					// 		.then(function() {
-					// 			return friendships.update(_.pluck(friendship, 'id'), _.omit(friendship, 'id'), {upsert: true});
-					// 		})
-					// 		.then(function() {
-					// 			db.close();
-					// 		})
-					// 		.then(function() {
-					// 			res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship], null, 4)});								
-					// 		});
-					// });					
+						users.createIndex({ "id": 1 }, { unique: true })
+							.then(function() {
+								return friendships.createIndex({"id": 1}, {unique: true});							
+							})
+							.then(function() {
+								return users.update(_.pluck(user, 'id'), _.omit(user, 'id'), {upsert: true}); 
+							})
+							.then(function() {
+								return friendships.update(_.pluck(friendship, 'id'), _.omit(friendship, 'id'), {upsert: true});
+							})
+							.then(function() {
+								db.close();
+							})
+							.then(function() {
+								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship], null, 4)});								
+							}, function(err) {
+								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship, err], null, 4)});								
+							});
+					});					
 				});		
 		}			
 	});	
