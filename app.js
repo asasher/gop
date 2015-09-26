@@ -66,12 +66,12 @@ app.get('/join', function(req, res) {
 		} else {
 			fbg.batch([
 					{
-						method: "GET",
-						relative_url: "me?fields=id,name,email,birthday"
+						method: 'GET',
+						relative_url: 'me?fields=id,name,email,birthday'
 					},
 					{
-						method: "GET",
-						relative_url: "me/friends"
+						method: 'GET',
+						relative_url: 'me/friends&limit=5000'
 					}
 				], 
 				function(err, fbRes) {
@@ -88,6 +88,10 @@ app.get('/join', function(req, res) {
 						}
 						
 						console.log('connected to mongodb');
+						
+						// var users = db.collection('users');
+						// var friendships = db.collection('friendships');						
+						
 						db.close();
 						
 						res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify(parsed, null, 4)});
