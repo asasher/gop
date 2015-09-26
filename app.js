@@ -71,7 +71,7 @@ app.get('/join', function(req, res) {
 					},
 					{
 						method: 'GET',
-						relative_url: 'me/friends&limit=5000'
+						relative_url: 'me/friends?offset=0&limit=5000'
 					}
 				], 
 				function(err, fbRes) {
