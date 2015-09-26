@@ -105,10 +105,10 @@ app.get('/join', function(req, res) {
 								return friendships.createIndex({"id": 1}, {unique: true});							
 							})
 							.then(function() {
-								return users.update(_.pluck(user, 'id'), _.omit(user, 'id'), {upsert: true}); 
+								return users.update(_.pick(user, 'id'), _.omit(user, 'id'), {upsert: true}); 
 							})
 							.then(function() {
-								return friendships.update(_.pluck(friendship, 'id'), _.omit(friendship, 'id'), {upsert: true});
+								return friendships.update(_.pick(friendship, 'id'), _.omit(friendship, 'id'), {upsert: true});
 							})
 							.then(function() {
 								db.close();
