@@ -79,13 +79,10 @@ app.get('/join', function(req, res) {
 						return JSON.parse(elem.body);
 					});
 					
-					var user = parsed[0];
-					var friendship = {
-						id : user.id,
-						friends: _.map(parsed[1].data, function(elem) {
+					var person = parsed[0];
+					person.friends = _.map(parsed[1].data, function(elem) {
 							return elem.id;
-						})
-					};
+					});
 										
 					console.log('connecting to mongo', CONF.MONGODB_URL);
 					MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
@@ -97,26 +94,16 @@ app.get('/join', function(req, res) {
 						
 						console.log('connected to mongodb');
 						
-						var users = db.collection('users');
-						var friendships = db.collection('friendships');
+						var people = db.collection('people');
 						
-						users.createIndex({ "id": 1 }, { unique: true })
-							.then(function() {
-								return friendships.createIndex({"id": 1}, {unique: true});							
-							})
-							.then(function() {
-								return users.update(_.pick(user, 'id'), _.omit(user, 'id'), {upsert: true}); 
-							})
-							.then(function() {
-								return friendships.update(_.pick(friendship, 'id'), _.omit(friendship, 'id'), {upsert: true});
-							})
+						people.update({_id: person.id}, _.omit(person, 'id'), {upsert: true})
 							.then(function() {
 								db.close();
 							})
 							.then(function() {
-								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship], null, 4)});								
+								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify(person, null, 4)});								
 							}, function(err) {
-								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([user, friendship, err], null, 4)});								
+								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([person, err], null, 4)});								
 							});
 					});					
 				});		
