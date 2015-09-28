@@ -26,6 +26,7 @@ app.set('views', __dirname + '/views');
 app.set('view cache', false);
 swig.setDefaults({ cache: false });
 app.listen(CONF.PORT);
+console.log('Server is listening on ', CONF.PORT);
 
 app.get('/', function (req, res) {
 	MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
@@ -38,8 +39,8 @@ app.get('/', function (req, res) {
 		
 		people.find()
 			.toArray()
-			.then(function(res) {
-				res.render('hello', {data: JSON.stringify(res, null, 4)});								
+			.then(function(dbRes) {
+				res.render('hello', {data: JSON.stringify(dbRes, null, 4)});								
 			}, function(err) {
 				res.render('error', {err: JSON.stringify(err, null, 4)});				
 			});		
