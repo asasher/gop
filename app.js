@@ -26,27 +26,36 @@ app.set('views', __dirname + '/views');
 app.set('view cache', false);
 swig.setDefaults({ cache: false });
 app.listen(CONF.PORT);
-console.log('Server is listening on port ' + CONF.PORT);
 
 app.get('/', function (req, res) {
-	res.render('hello', { text: 'HELLO', textClass: 'good'});
+	MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+		if (err) {		
+			res.render('error', {err: JSON.stringify(err, null, 4)});
+			return;
+		}
+		
+		var people = db.collection('people');
+		
+		people.find()
+			.toArray()
+			.then(function(res) {
+				res.render('hello', {data: JSON.stringify(res, null, 4)});								
+			}, function(err) {
+				res.render('error', {err: JSON.stringify(err, null, 4)});				
+			});		
+	});	
 });
 
 app.get('/join', function(req, res) {
-	console.log('got request');
 	if (!req.query || !req.query.code) {
 		var authUrl = fbg.getOauthUrl({
 			client_id: CONF.CLIENT_ID,
 			redirect_uri: CONF.REDIRECT_URI,
 			scope: CONF.PERMISSIONS.join(',')
 		});
-		
-		console.log('redirecting to facebook to get permissions', authUrl);
 		res.redirect(authUrl);
 		return;
 	}
-	
-	console.log('got code', req.query.code);
 	
 	fbg.authorize({
 		client_id: CONF.CLIENT_ID,
@@ -54,15 +63,11 @@ app.get('/join', function(req, res) {
 		client_secret: CONF.CLIENT_SECRET,
 		code: req.query.code
 	}, function(err, fbRes) {
-		console.log('response from facebook', fbRes);
-		
-		if(err) {
-			console.log(err);
-			res.render('hello', {text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(err, null, 4)});
+		if(err) {		
+			res.render('error', {err: JSON.stringify(err, null, 4)});
 		}
-		else if (!fbRes || fbRes.error) {
-			console.log(fbRes.error)
-			res.render('hello',{text: '_ No Luck _', textClass : 'bad', data: JSON.stringify(fbRes, null, 4)});			
+		else if (!fbRes || fbRes.error) {		
+			res.render('error', {err: JSON.stringify(fbRes.error, null, 4)});			
 		} else {
 			fbg.batch([
 					{
@@ -82,17 +87,14 @@ app.get('/join', function(req, res) {
 					var person = parsed[0];
 					person.friends = _.map(parsed[1].data, function(elem) {
 							return elem.id;
-					});
-										
-					console.log('connecting to mongo', CONF.MONGODB_URL);
+					});										
+				
 					MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
 						if (err) {
-							console.log(err);
-							res.render('hello', {text: '!!! DB ERROR !!!', textClass: 'bad', data: JSON.stringify(err, null, 4)});
+						
+							res.render('error', {err: JSON.stringify(err, null, 4)});
 							return;
 						}
-						
-						console.log('connected to mongodb');
 						
 						var people = db.collection('people');
 						
@@ -101,12 +103,13 @@ app.get('/join', function(req, res) {
 								db.close();
 							})
 							.then(function() {
-								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify(person, null, 4)});								
+								res.redirect('/');								
 							}, function(err) {
-								res.render('hello', {text: '!!! All Done !!!', textClass: 'good', data: JSON.stringify([person, err], null, 4)});								
+								res.render('error', {err: JSON.stringify(err, null, 4)});								
 							});
 					});					
 				});		
 		}			
 	});	
 });
+ 
