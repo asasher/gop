@@ -40,7 +40,9 @@ app.get('/', function (req, res) {
 		people.find()
 			.toArray()
 			.then(function(dbRes) {
-				res.render('hello', { data: function(){ return JSON.stringify(dbRes, null, 4);});								
+				res.render('hello', {data: function() {
+					return JSON.stringify(dbRes, null, 4);
+				}});								
 			}, function(err) {
 				res.render('error', {err: JSON.stringify(err, null, 4)});				
 			});		
