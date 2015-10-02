@@ -20,7 +20,7 @@ see console
 		</pre>		
 	</body>
 	<script>
-		var data = {{ data }};
+		var data = {% autoescape false %}{{ data }}{% endautoescape %};
 		console.log(data);
 	</script>
 </html>
