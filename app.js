@@ -29,7 +29,7 @@ app.listen(CONF.PORT);
 console.log('Server is listening on ', CONF.PORT);
 
 app.get('/', function (req, res) {
-	if (req.params.dummy) {
+	if (req.query.dummy) {
 		var people = _.range(50).map(function(person,i) {
 			return {
 				_id:i,
