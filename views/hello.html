@@ -21,8 +21,12 @@
 				fill: #fff;
 			}
 			.node.dummy {
+				fill: #0F0E17;
 				visibility: hidden;
 				pointer-events: all;
+			}
+			.node.dummy:hover {
+				visibility: visible;
 			}
 			.label {
 				font-family: 'Lato';
@@ -91,7 +95,7 @@
 		})		
 		.attr('r', function(d) {
 			return d.dummy ? 10 : 5;
-		})		
+		})
 		.on("dblclick", dblclick)
 		.call(drag);
 		
