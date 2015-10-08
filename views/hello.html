@@ -60,12 +60,16 @@
 	force.nodes(graph.nodes)
 		.links(graph.links)
 		.start();
+		
+	function linkId(d, i) {
+		return 'link-' + i;		
+	}
 	
 	var link = svg.selectAll('.link')
 		.data(graph.links)
 		.enter()
 		.append('path')
-		.attr('id', function(d,i) { return 'link-' + i; })
+		.attr('id', linkId)
 		.attr('class', 'link');
 		
 	var node = svg.selectAll('.node')
@@ -84,7 +88,7 @@
 		.attr('dx',20)
 		.attr('dy',0)
 		.append("textPath")
-		.attr("xlink:href",function(d,i) { return d.source + '-' + d.target;})
+		.attr("xlink:href",linkId)
 		.text(function(d,i) { return d.text;});
 	
 	force.on('tick', function() {
