@@ -40,7 +40,25 @@ app.get('/', function (req, res) {
 		people.find()
 			.toArray()
 			.then(function(dbRes) {
-				res.render('hello', {data: JSON.stringify(dbRes, null, 4)});								
+				var indices = {};
+				var graph = {
+					nodes : [],
+					links : []
+				};
+				dbRes.map(function(person, index) {
+					indices[person._id] = index;
+					graph.nodes.push(_.assign(_.pick(person, ['name', 'email']), { group: 1 }));									
+				});				
+				dbRes.map(function(person, index) {
+					person.friends.map(function(friend) {
+						graph.links.push({
+							source: index,
+							target: indices[friend],
+							value: 1 
+						});						
+					});
+				});				
+				res.render('hello', {data: JSON.stringify(graph, null, 4)});								
 			}, function(err) {
 				res.render('error', {err: JSON.stringify(err, null, 4)});				
 			});		
