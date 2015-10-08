@@ -19,8 +19,6 @@
 			}
 			.node {
 				fill: #fff;
-				stroke: #fff;
-				stroke-width: 1.5px;
 			}
 			.label {
 				font-family: 'Lato';
@@ -28,7 +26,6 @@
 				fill: #fff;
 			}
 			.link {
-				stroke-width: 1;
 				stroke: #fff;
 				stroke-opacity: .6;
 			}
@@ -70,14 +67,19 @@
 		.enter()
 		.append('path')
 		.attr('id', linkId)
-		.attr('class', 'link');
+		.attr('class', 'link')
+		.attr('stroke-width', function(d) {
+			return d.dummy ? 0 : 1;
+		});
 		
 	var node = svg.selectAll('.node')
 		.data(graph.nodes)
 		.enter()
 		.append('circle')
 		.attr('class', 'node')
-		.attr('r', 5)
+		.attr('r', function(d) {
+			return d.dummy ? 0 : 5;
+		})
 		.call(force.drag);
 		
 	var labels = svg.selectAll(".label")
@@ -94,8 +96,12 @@
 		.text(function(d,i) { return d.text;});
 	
 	force.on('tick', function() {
-		link.attr('d', function(d) {
-			return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;
+		link.attr('d', function(d) {			
+			if (d.dummy) {
+				return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;				
+			} else {
+				return 'M' + d.source.x + ',' + d.source.y + 'L' + 100*d.target.x + ',' + 100*d.target.y;				
+			}			
 		});	
 	
 		node.attr("cx", function(d) { return d.x; })

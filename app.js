@@ -47,12 +47,13 @@ app.get('/', function (req, res) {
 				};
 				dbRes.map(function(person, index) {
 					indices[person._id] = 2*index;
-					graph.nodes.push({ group: 1 });
-					graph.nodes.push({ group: 0 });
+					graph.nodes.push({ id: person._id });
+					graph.nodes.push({ dummy: true });
 					graph.links.push({
 						source: 2*index,
 						target: 2*index + 1,
-						text: person.name + ' (' + person.email + ')'
+						text: person.name + ' (' + person.email + ')',
+						dummy: true
 					})									
 				});				
 				dbRes.map(function(person, index) {
