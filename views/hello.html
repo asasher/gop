@@ -20,10 +20,15 @@
 			.node {
 				fill: #fff;
 			}
+			.node.dummy {
+				visibility: hidden;
+				pointer-events: all;
+			}
 			.label {
 				font-family: 'Lato';
 				font-size: 0.8em;
 				fill: #fff;
+				pointer-events: none;
 			}
 			.link {
 				stroke: #fff;
@@ -77,9 +82,12 @@
 		.enter()
 		.append('circle')
 		.attr('class', 'node')
+		.classed('dummy', function(d) {
+			return d.dummy;
+		})		
 		.attr('r', function(d) {
 			return d.dummy ? 10 : 5;
-		})
+		})		
 		.call(force.drag);
 		
 	var labels = svg.selectAll(".label")
