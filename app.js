@@ -29,47 +29,71 @@ app.listen(CONF.PORT);
 console.log('Server is listening on ', CONF.PORT);
 
 app.get('/', function (req, res) {
-	MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
-		if (err) {		
-			res.render('error', {err: JSON.stringify(err, null, 4)});
-			return;
-		}
-		
-		var people = db.collection('people');
-		
-		people.find()
-			.toArray()
-			.then(function(dbRes) {
-				var indices = {};
-				var graph = {
-					nodes : [],
-					links : []
-				};
-				dbRes.map(function(person, index) {
-					indices[person._id] = 2*index;
-					graph.nodes.push({ id: person._id });
-					graph.nodes.push({ dummy: true });
-					graph.links.push({
-						source: 2*index,
-						target: 2*index + 1,
-						text: person.name + '\n(' + person.email + ')',
-						dummy: true
-					})									
-				});				
-				dbRes.map(function(person, index) {
-					person.friends.map(function(friend) {
-						graph.links.push({
-							source: indices[person._id],
-							target: indices[friend]
-						});						
-					});
-				});				
-				res.render('hello', {data: JSON.stringify(graph, null, 4)});								
-			}, function(err) {
-				res.render('error', {err: JSON.stringify(err, null, 4)});				
-			});		
-	});	
+	if (req.params.dummy) {
+		var people = _.range(50).map(function(person,i) {
+			return {
+				_id:i,
+				name: 'Lorem Ipsum',
+				email: 'lorem@ipsum.com',
+				friends: _.sample(people, _.random(25, 50))
+			}
+		});			
+		var graph = getGraph(people);
+		res.render('hello', {data: JSON.stringify(graph, null, 4)});
+	} else {
+		MongoClient.connect(CONF.MONGODB_URL, function(err, db) {
+			if (err) {		
+				res.render('error', {err: JSON.stringify(err, null, 4)});
+				return;
+			}
+			
+			if (req.param.dummy) {
+				
+			} else {
+				var people = db.collection('people');			
+			}
+			
+			
+			people.find()
+				.toArray()
+				.then(function(dbRes) {
+					var graph = getGraph(dbRes);			
+					res.render('hello', {data: JSON.stringify(graph, null, 4)});								
+				}, function(err) {
+					res.render('error', {err: JSON.stringify(err, null, 4)});				
+				});		
+		});		
+	}		
 });
+
+function getGraph(people) {
+	var indices = {};
+	var graph = {
+		nodes : [],
+		links : []
+	};
+	people.map(function(person, index) {
+		indices[person._id] = 2*index;
+		graph.nodes.push({ id: person._id });
+		graph.nodes.push({ dummy: true });
+		graph.links.push({
+			source: 2*index,
+			target: 2*index + 1,
+			text: person.name + '\n(' + person.email + ')',
+			dummy: true
+		})									
+	});				
+	people.map(function(person, index) {
+		person.friends.map(function(friend) {
+			graph.links.push({
+				source: indices[person._id],
+				target: indices[friend]
+			});						
+		});
+	});		
+	
+	return graph;		
+}
 
 app.get('/join', function(req, res) {
 	if (!req.query || !req.query.code) {
