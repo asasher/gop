@@ -47,12 +47,7 @@ app.get('/', function (req, res) {
 				return;
 			}
 			
-			if (req.param.dummy) {
-				
-			} else {
-				var people = db.collection('people');			
-			}
-			
+			var people = db.collection('people');
 			
 			people.find()
 				.toArray()
