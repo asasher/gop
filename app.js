@@ -58,7 +58,7 @@ app.get('/', function (req, res) {
 				dbRes.map(function(person, index) {
 					person.friends.map(function(friend) {
 						graph.links.push({
-							source: index,
+							source: indices[person._id],
 							target: indices[friend],
 							value: 2
 						});						
