@@ -60,7 +60,7 @@
 		.attr("class", "link")
 		.style("stroke-width", function(d) { return Math.sqrt(d.value); });
 	
-	var gnode = svg.selectAll(".node")
+	var gnode = svg.selectAll("g.node")
 		.data(graph.nodes)
 		.enter()
 		.append('g')
