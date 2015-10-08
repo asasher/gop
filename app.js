@@ -30,12 +30,13 @@ console.log('Server is listening on ', CONF.PORT);
 
 app.get('/', function (req, res) {
 	if (req.query.dummy) {
-		var people = _.range(50).map(function(person,i) {
+		var dummies = _.range(50);
+		var people = dummies.map(function(i) {
 			return {
 				_id:i,
 				name: 'Lorem Ipsum',
 				email: 'lorem@ipsum.com',
-				friends: _.sample(people, _.random(25, 50))
+				friends: _.sample(dummies, _.random(25, 50))
 			}
 		});			
 		var graph = getGraph(people);
