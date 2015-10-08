@@ -88,7 +88,9 @@
 		.attr('dx',20)
 		.attr('dy',0)
 		.append("textPath")
-		.attr("xlink:href",linkId)
+		.attr("xlink:href",function(d,i) {
+			return '#' + linkId(d,i);
+		})
 		.text(function(d,i) { return d.text;});
 	
 	force.on('tick', function() {
