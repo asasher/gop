@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title>GOP</title>
+		<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<style>
 			* {
 				box-sizing: border-box;
@@ -17,10 +18,15 @@
 				height: 100%;
 			}
 			.node {
+				fill: #fff;
 				stroke: #fff;
 				stroke-width: 1.5px;
 			}
-			
+			.label {
+				font-family: 'Lato';
+				font-size: 0.8em;
+				fill: #fff;
+			}
 			.link {
 				stroke: #fff;
 				stroke-opacity: .6;
@@ -69,11 +75,12 @@
 	var node = gnodes.append("circle")
 		.attr("class", "node")
 		.attr("r", 5)
-		.style("fill", function(d) { return color(d.group); })
 		.call(force.drag);
 		
 	var labels = gnodes.append("text")
-  		.text(function(d) { return d.name; });
+  		.text(function(d) { return d.name; })
+		.attr('text-anchor','start')
+		.attr('class','label');
 	
 	force.on("tick", function() {
 		link.attr("x1", function(d) { return d.source.x; })

@@ -46,15 +46,21 @@ app.get('/', function (req, res) {
 					links : []
 				};
 				dbRes.map(function(person, index) {
-					indices[person._id] = index;
-					graph.nodes.push(_.assign(_.pick(person, ['name', 'email']), { group: 1 }));									
+					indices[person._id] = 2*index;
+					graph.nodes.push(_.assign(_.pick(person, ['name', 'email']), { group: 1 }));
+					graph.nodes.push({ group: 0 });
+					graph.links.push({
+						source: 2*index,
+						target: 2*index + 1,
+						value: 0.5
+					})									
 				});				
 				dbRes.map(function(person, index) {
 					person.friends.map(function(friend) {
 						graph.links.push({
 							source: index,
 							target: indices[friend],
-							value: 1 
+							value: 2
 						});						
 					});
 				});				
