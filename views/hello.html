@@ -98,9 +98,9 @@
 	force.on('tick', function() {
 		link.attr('d', function(d) {			
 			if (d.dummy) {
-				return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;				
+				return 'M' + d.source.x + ',' + d.source.y + 'L' + 100*d.target.x + ',' + 100*d.target.y;						
 			} else {
-				return 'M' + d.source.x + ',' + d.source.y + 'L' + 100*d.target.x + ',' + 100*d.target.y;				
+				return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;										
 			}			
 		});	
 	
