@@ -52,7 +52,7 @@ app.get('/', function (req, res) {
 					graph.links.push({
 						source: 2*index,
 						target: 2*index + 1,
-						text: person.name + ' (' + person.email + ')',
+						text: person.name + '\n(' + person.email + ')',
 						dummy: true
 					})									
 				});				
