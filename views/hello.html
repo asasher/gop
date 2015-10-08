@@ -78,7 +78,7 @@
 		.append('circle')
 		.attr('class', 'node')
 		.attr('r', function(d) {
-			return d.dummy ? 0 : 5;
+			return d.dummy ? 10 : 5;
 		})
 		.call(force.drag);
 		
@@ -98,7 +98,7 @@
 	force.on('tick', function() {
 		link.attr('d', function(d) {			
 			if (d.dummy) {
-				return 'M' + d.source.x + ',' + d.source.y + 'L' + 100*d.target.x + ',' + 100*d.target.y;						
+				return 'M' + d.source.x + ',' + d.source.y + 'L' + 10*d.target.x + ',' + 10*d.target.y;						
 			} else {
 				return 'M' + d.source.x + ',' + d.source.y + 'L' + d.target.x + ',' + d.target.y;										
 			}			
