@@ -135,7 +135,7 @@
 		d3.select(this).classed("fixed", d.fixed = true);
 	}
 	
-	var insertLinebreaks = function (d) {
+	function insertLinebreaks(d) {
 		var el = d3.select(this);
 		var lines = d.text.split('\n');
 		el.text('');
