@@ -36,7 +36,7 @@ app.get('/', function (req, res) {
 				_id:i,
 				name: 'Lorem Ipsum',
 				email: 'lorem@ipsum.com',
-				friends: _.sample(dummies, _.random(25, 50))
+				friends: _.sample(dummies, _.random(5, 50))
 			}
 		});			
 		var graph = getGraph(people);
@@ -68,16 +68,22 @@ function getGraph(people) {
 		nodes : [],
 		links : []
 	};
+	graph.nodes.push({center: true});
 	people.map(function(person, index) {
-		indices[person._id] = 2*index;
+		indices[person._id] = 2*index + 1;
 		graph.nodes.push({ id: person._id });
 		graph.nodes.push({ dummy: true });
 		graph.links.push({
-			source: 2*index,
+			source: 0,
 			target: 2*index + 1,
+			center: true			
+		});
+		graph.links.push({
+			source: 2*index + 1,
+			target: 2*index + 2,
 			text: person.name + '\n(' + person.email + ')',
 			dummy: true
-		})									
+		});									
 	});				
 	people.map(function(person, index) {
 		person.friends.map(function(friend) {
