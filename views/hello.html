@@ -66,6 +66,8 @@
 				return 600;
 			} else if(d.dummy) {
 				return 10;
+			} else if(d.center_to_dummy) {
+				return 800;
 			} else {
 				return 1000;
 			}
@@ -97,9 +99,7 @@
 		.attr('id', linkId)
 		.attr('class', 'link')
 		.attr('stroke-width', function(d) {
-			if (d.center) {
-				return 0;
-			} else if (d.dummy) {
+			if (d.center || d.dummy || d.center_to_dummy) {
 				return 0;
 			} else return 1;
 		});

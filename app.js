@@ -83,7 +83,12 @@ function getGraph(people) {
 			target: 2*index + 2,
 			text: person.name + '\n(' + person.email + ')',
 			dummy: true
-		});									
+		});
+		graph.link.push({
+			source: 0,
+			target: 2*index + 2,
+			center_to_dummy: true
+		});
 	});				
 	people.map(function(person, index) {
 		person.friends.map(function(friend) {
