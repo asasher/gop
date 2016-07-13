@@ -84,7 +84,7 @@ function getGraph(people) {
 			text: person.name + '\n(' + person.email + ')',
 			dummy: true
 		});
-		graph.link.push({
+		graph.links.push({
 			source: 0,
 			target: 2*index + 2,
 			center_to_dummy: true
